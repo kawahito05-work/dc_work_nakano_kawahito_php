@@ -21,7 +21,7 @@ if (mb_strlen($comment) > 100) {
     print 'コメントは100文字以内でお願いします'."\n";
 }
 
-if (mb_strlen($comment) === 0) {
+if (mb_strlen($name) === 0) {
     print '名前を入力してください'."\n";
 }
 if (mb_strlen($comment) === 0) {

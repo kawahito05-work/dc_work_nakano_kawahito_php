@@ -38,11 +38,12 @@ if (is_readable($filename) === TRUE) {
         ?>
         <p><td><?php print $pieces[0]; ?></td></p>
         <?php
-                //$piece = str_replace('"', '',$piece);
+                //$pieces[$i] = str_replace('"', '',$pieces[$i]);
                 //$piece = trim($piece,'"');
                 for($i = 4; $i < 7;$i++){
+                    $piece = str_replace('"', "",(string)$pieces[$i]);
         ?>
-            <p><td><?php print $pieces[$i]; ?></td></p>
+            <p><td><?php print $piece; ?></td></p>
         <?php } ?>
         </tr>
         <?php } ?>
