@@ -14,19 +14,19 @@ if(isset($_POST['comment'])===TRUE){
     $comment = $_POST['comment'];
 }
 
-if (mb_strlen($name) > 20) {
-    print '名前は20文字以内でお願いします'."\n";
-} 
-if (mb_strlen($comment) > 100) {
-    print 'コメントは100文字以内でお願いします'."\n";
-}
+//if (mb_strlen($name) > 20) {
+//    print '名前は20文字以内でお願いします'."\n";
+//} 
+//if (mb_strlen($comment) > 100) {
+//    print 'コメントは100文字以内でお願いします'."\n";
+//}
 
-if (mb_strlen($name) === 0) {
-    print '名前を入力してください'."\n";
-}
-if (mb_strlen($comment) === 0) {
-    print 'コメントを入力してください'."\n";
-}
+//if (mb_strlen($comment) === 0) {
+//    print '名前を入力してください'."\n";
+//}
+//if (mb_strlen($comment) === 0) {
+//    print 'コメントを入力してください'."\n";
+//}
 
 //if (preg_match("/[0-9]/", $name)) {
 //    echo "名前に数字が含まれています";
@@ -40,9 +40,13 @@ if (mb_strlen($name) > 20) {
     print '名前は20文字以内でお願いします';
 } elseif (mb_strlen($comment) > 100) {
     print 'コメントは100文字以内でお願いします';
-} elseif (mb_strlen($comment) === 0) {
+//} elseif (mb_strlen($name) === 0) {
+//    print '名前を入力してください';
+//} elseif (mb_strlen($comment) === 0) {
+//    print 'コメントを入力してください';
+} else if ($name === '') {
     print '名前を入力してください';
-} elseif (mb_strlen($comment) === 0) {
+} elseif ($comment === '') {
     print 'コメントを入力してください';
 } else {
     $data = $name.' '.$comment.$log."\n";
@@ -85,8 +89,8 @@ if (is_readable($filename) === TRUE) {
         <input type="text" name="name">
         <div class="box">
         コメント:
-        <textarea name="comment">
-        </textarea>
+        <input type="text" name="comment">
+        </input>
         </div>
         <input type="submit" name="submit" value="送信">
 

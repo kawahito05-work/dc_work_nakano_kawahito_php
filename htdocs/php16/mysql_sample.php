@@ -28,8 +28,8 @@ if ($link) {
 <head>
     <meta charset="UTF-8">
     <title>サンプル</title>
-    <style type="text/css">
-        table, td, th {
+    <style>
+        table, td, tr {
             border: solid black 1px;
         }
         table {

@@ -2,7 +2,7 @@
 $name = '';
 $gender = '';
 $mail = '';
-if(($_POST['my_name'])!==''){
+if(isset($_POST['my_name'])===TRUE){
     $name = htmlspecialchars($_POST['my_name'], ENT_QUOTES, 'UTF-8');
     print 'ここに入力したお名前を表示:'.$name;
     print '<br />';
