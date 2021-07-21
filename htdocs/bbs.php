@@ -89,8 +89,8 @@ if (is_readable($filename) === TRUE) {
         <input type="text" name="name">
         <div class="box">
         コメント:
-        <input type="text" name="comment">
-        </input>
+        <textarea name="comment">
+        </textarea>
         </div>
         <input type="submit" name="submit" value="送信">
     </form>
