@@ -93,7 +93,6 @@ if (is_readable($filename) === TRUE) {
         </input>
         </div>
         <input type="submit" name="submit" value="送信">
-
     </form>
 <?php foreach ($history as $read) { ?>
     <p><?php print $read; ?></p>

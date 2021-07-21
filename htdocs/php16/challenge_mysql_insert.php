@@ -1,26 +1,30 @@
 <?php
 $goods_data = [];
-
+$message = '追加する商品の名前と価格を入力してください';
 $host = 'localhost';
 $username = 'codecamp42254';
 $passwd = 'codecamp42254';
 $dbname = 'codecamp42254';
 $link = mysqli_connect($host, $username, $passwd, $dbname);
 
-//if ((isset($_GET['name']) === TRUE ) && (isset($_GET['price']) === TRUE )){
+if ((isset($_GET['goods_name']) === TRUE ) && (isset($_GET['goods_price']) === TRUE )){
 //if (isset($_POST['name']) === TRUE ){
 //if ((isset($_GET['goods_name']) === TRUE ) && (isset($_GET['goods_price']) === TRUE )){
-if (($_GET['goods_name'] !== '') && ($_GET['goods_price'] !== '')){
+//if (($_GET['goods_name'] !== '') && ($_GET['goods_price'] !== '')){
     $name = $_GET['goods_name'];
     $price = $_GET['goods_price'];
-    print $name;
-    if ((is_string($name) === TRUE ) || (is_int($price) === TRUE)){
-        print 'kasu222';
+    //if ((is_string($name) === TRUE ) && (is_numeric($price) === TRUE)){
+    if ($link) {
+        mysqli_set_charset($link, 'utf8');
+        $query = 'INSERT INTO goods_table(goods_name, price) VALUES (\''.$name.'\','.$price.')';
+        //print $query;
+        if (mysqli_query($link, $query) === TRUE){
+            $message = '追加成功';
+        } else {
+            $message = '追加失敗';
+        }
     }
-}else{
-    print 'kkk';
 }
-
 
 if ($link) {
     mysqli_set_charset($link, 'utf8');
@@ -34,6 +38,7 @@ if ($link) {
 }else{
     print 'DB接続失敗';
 }
+print $message;
 ?>
 
 
