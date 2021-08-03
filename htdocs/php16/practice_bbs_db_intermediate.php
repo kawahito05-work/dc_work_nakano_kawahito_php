@@ -10,6 +10,7 @@ $dbname = 'codecamp42254';
 $link = mysqli_connect($host, $username, $passwd, $dbname);
 
 
+
 if((isset($_POST['name'])===TRUE)&&(isset($_POST['comment'])===TRUE)){
     if(($_POST['name']!=='')&&($_POST['comment']!=='')){
         $name = $_POST['name'];

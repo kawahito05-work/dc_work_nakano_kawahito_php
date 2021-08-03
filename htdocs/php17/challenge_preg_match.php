@@ -18,7 +18,7 @@ $check_mail[0] = 'test@test.com';
 $check_mail[1] = 'test_2@test.co.jp';
 $check_mail[2] = 'test.3@example.ne.jp';
 // URL
-$regexp_url   = '/https?:\/\/([a-zA-Z0-9])+([a-zA-Z0-9._-])*.([a-zA-Z0-9_-])+([a-zA-Z0-9._-]+)+/'; // URLの正規表現を入力
+$regexp_url   = '/https?:\/\/([a-zA-Z0-9])+([a-zA-Z0-9._-])*.([a-zA-Z0-9_-])+([a-zA-Z0-90.=?_-]+)+/'; // URLの正規表現を入力
 //$regexp_url   = '#http://([a-zA-Z0-9])+([a-zA-Z0-9._-])*.([a-zA-Z0-9_-])+([a-zA-Z0-9._-]+)+|https://([a-zA-Z0-9])+([a-zA-Z0-9._-])*.([a-zA-Z0-9_-])+([a-zA-Z0-9._-]+)+#'; // URLの正規表現を入力
 $check_url[0] = 'http://codecamp.jp';
 $check_url[1] = 'https://test.com';
