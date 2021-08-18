@@ -32,18 +32,16 @@ if (is_readable($filename) === TRUE) {
         <?php foreach ($data as $read) { ?>
             <tr>
         <?php
-                //$read = str_replace('"', '',$read);
+                $read = str_replace('"', '',$read);
                 $pieces = explode(',', $read);
                 //$pieces = str_replace('"', '',$pieces);
         ?>
         <p><td><?php print $pieces[0]; ?></td></p>
         <?php
+                //$pieces[$i] = str_replace('"', '',$pieces[$i]);
+                //$piece = trim($piece,'"');
                 for($i = 4; $i < 7;$i++){
-                    //$piece = str_replace('"', "",(string)$pieces[$i]);
-                    //$pieces[$i] = '" 試験 2"';
-                    $piece = $pieces[$i];
-                    $piece = trim($piece, '"');
-                    //$piece = trim('"test"', '"');
+                    $piece = str_replace('"', "",(string)$pieces[$i]);
         ?>
             <p><td><?php print $piece; ?></td></p>
         <?php } ?>
