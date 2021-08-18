@@ -3,25 +3,26 @@ $regexp_zipcode = '/^[0-9]{7}/';
 $err_msg = '';
 $zipcode = '';
 $limit = '';
-$pref = '';
-$address = '';
-$max_page = '';
-$pref = '都道府県を選択';
 $postal_data = [];
-$all_data = [];
 $host = 'localhost';
-$username = 'root';
-$passwd = '1234';
+$username = 'codecamp42254';
+$passwd = 'codecamp42254';
 $dbname = 'codecamp42254';
 $link = mysqli_connect($host, $username, $passwd, $dbname);
 $flag = FALSE;
 
 if(isset($_REQUEST['page']) && is_numeric($_REQUEST['page'])) {
+    print $_GET['page'];
+    print $_GET['pref'];
+    print $_GET['address'];
+    print 'AAAAAA';
     $page = $_REQUEST['page'];
-    $limit = "LIMIT ".($page*10).",10";
+    $limit = "LIMIT ".($page*10 + 1).",10";
+    print $limit;
 }else{
     $page = 0;
-    $limit = "LIMIT 0,10";
+    print 'BBBBBBBBB';
+    $limit = "LIMIT 1,10";
 }
 
 if (isset($_POST['zipcode']) === TRUE){
@@ -38,7 +39,7 @@ if (isset($_POST['zipcode']) === TRUE){
         mysqli_set_charset($link, 'utf8');
         $query = "SELECT postal_code, prefecture_katakana, district_katakana,
         street_katakana, prefecture, district, street FROM postal_data WHERE postal_code = '".$zipcode."';";
-        //print $query;
+        
         $result = mysqli_query($link, $query);
         
         while ($row = mysqli_fetch_array($result)){
@@ -46,25 +47,34 @@ if (isset($_POST['zipcode']) === TRUE){
             $postal_data[] = $row;
             
         }
-        $all_data = $postal_data;
         mysqli_free_result($result);
         mysqli_close($link);
     }
-} else if (isset($_REQUEST['pref']) === TRUE && $_REQUEST['address'] === '' ){
+}
 
-     $err_msg = '市長区村を入力してください';
-     $pref = $_REQUEST['pref'];
-
-}else if ((isset($_REQUEST['pref']) === TRUE && isset($_REQUEST['address']) === TRUE)||($page > 1)){
-
+if (isset($_POST['pref']) === TRUE && isset($_POST['address']) === TRUE){
     $flag = TRUE;
     $pref = $_REQUEST['pref'];
     $address = $_REQUEST['address'];
+} else {
+    
+}
+
+if (($pref !== ''&&$address !== '')||($page > 1)){
     mysqli_set_charset($link, 'utf8');
 
     $query = "SELECT postal_code, prefecture_katakana, district_katakana,
               street_katakana, prefecture, district, street FROM postal_data WHERE
               prefecture = '".$pref."' AND district LIKE '%".$address."%'".$limit.";";
+    print $query;
+
+//    $query = "SELECT postal_code, prefecture_katakana, district_katakana,
+//              street_katakana, prefecture, district, street FROM postal_data WHERE
+//              prefecture = '".$pref."' AND district LIKE '%".$address."%'".$limit.";";
+              
+//    $query = "SELECT postal_code, prefecture_katakana, district_katakana,
+//              street_katakana, prefecture, district, street FROM postal_data WHERE
+//              prefecture = '".$pref."' AND district LIKE '%".$address."%';";
 
     $result = mysqli_query($link, $query);
     
@@ -74,22 +84,6 @@ if (isset($_POST['zipcode']) === TRUE){
         
     }
     mysqli_free_result($result);
-    
-    
-    $query = "SELECT postal_code, prefecture_katakana, district_katakana,
-              street_katakana, prefecture, district, street FROM postal_data WHERE
-              prefecture = '".$pref."' AND district LIKE '%".$address."%';";
-    //print $query;
-    
-    $result = mysqli_query($link, $query);
-    
-    while ($row = mysqli_fetch_array($result)){
-        
-        $all_data[] = $row;
-        
-    }
-    mysqli_free_result($result);
-    
     mysqli_close($link);
 }
 
@@ -121,10 +115,7 @@ if (isset($_POST['zipcode']) === TRUE){
     <section>
         <h2>郵便番号から検索</h2>
         <form method="POST">
-<?php
-            print '<input type="text" name="zipcode" placeholder="例）1010001" value="'.$zipcode.'">';
-?>
-            <input type="hidden" name="page" value="">
+            <input type="text" name="zipcode" placeholder="例）1010001" value="">
             <input type="hidden" name="search_method" value="zipcode">
             <input type="submit" value="検索">
         </form>
@@ -132,7 +123,7 @@ if (isset($_POST['zipcode']) === TRUE){
         <form method="POST">
             都道府県を選択
             <select name="pref">
-                <option value="都道府県を選択" >都道府県を選択</option>
+                <option value="" selected>都道府県を選択</option>
                 <option value="北海道" >北海道</option>
                 <option value="青森県" >青森県</option>
                 <option value="岩手県" >岩手県</option>
@@ -182,17 +173,13 @@ if (isset($_POST['zipcode']) === TRUE){
                 <option value="沖縄県" >沖縄県</option>
             </select>
             市区町村
-<?php
-            //print '<input type="hidden" name="pref" value="'.$pref.'">';
-            print '<input type="text" name="address" value="'.$address.'">';
-?>
+            <input type="text" name="address" value="">
             <input type="hidden" name="search_method" value="address">
-            <input type="hidden" name="page" value="">
             <input type="submit" value="検索">
         </form>
     </section>
     <section class="search_reslut">
-        <p>検索結果<?php print count($all_data); ?></p>
+        <p>検索結果<?php print count($postal_data); ?></p>
 <?php
 print $err_msg;
 if (empty($postal_data) === FALSE){
@@ -223,15 +210,13 @@ if (empty($postal_data) === FALSE){
 </table>
 <?php
 }
-$max_page = ceil(count($all_data)/10);
-if ($page > 0) {
-    //print '<a href=/php17/practice_post_code_advanced.php/?page='.($page-1).'&pref='.$pref.'&address='.$address.'>前へ</a>'. '　';
-    print '<a href=/dc_work_nakano_kawahito_php/htdocs/php17/practice_post_code_advanced.php/?page='.($page-1).'&pref='.$pref.'&address='.$address.'>前へ</a>'. '　';
-}
-if ($page < $max_page-1) {
-    //print '<a href=/php17/practice_post_code_advanced.php/?page='.($page+1).'&pref='.$pref.'&address='.$address.'>次へ</a>'. '　';
-    print '<a href=/dc_work_nakano_kawahito_php/htdocs/php17/practice_post_code_advanced.php/?page='.($page+1).'&pref='.$pref.'&address='.$address.'>次へ</a>'. '　';
-}
+//if($now < $max_page){ // リンクをつけるかの判定
+    //echo '<a href=/php17/practice_post_code_advanced.php/?page=1>次へ</a>'. '　';
+    echo '<a href=/php17/practice_post_code_advanced.php/?page='.($page+1).'>次へ</a>'. '　';
+    echo '<a href=/php17/practice_post_code_advanced.php/?page='.($page+1).'&pref='.$pref.'&address='.$address.'>次へ</a>'. '　';
+    //echo '<a href='/practice_file_intermediate.php?page_id='.($now + 1).'')>次へ</a>'. '　';
+    //echo '<a href='/test.php?page_id='. $i. '')>'.1. '</a>'. '　';
+//}
 ?>
     </section>
 </body>
