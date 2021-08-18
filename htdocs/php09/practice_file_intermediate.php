@@ -44,6 +44,8 @@ if (is_readable($filename) === TRUE) {
                     $piece = $pieces[$i];
                     $piece = trim($piece, '"');
                     //$piece = trim('"test"', '"');
+                    //$test = '"test';
+                    //$piece = trim($test, '"');
         ?>
             <p><td><?php print $piece; ?></td></p>
         <?php } ?>
