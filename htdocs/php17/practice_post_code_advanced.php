@@ -16,6 +16,58 @@ $dbname = 'codecamp42254';
 $link = mysqli_connect($host, $username, $passwd, $dbname);
 $flag = FALSE;
 
+$prefs = array(
+    0=>'都道府県を選択',
+    1=>'北海道',
+    2=>'青森県',
+    3=>'岩手県',
+    4=>'宮城県',
+    5=>'秋田県',
+    6=>'山形県',
+    7=>'福島県',
+    8=>'茨城県',
+    9=>'栃木県',
+    10=>'群馬県',
+    11=>'埼玉県',
+    12=>'千葉県',
+    13=>'東京都',
+    14=>'神奈川県',
+    15=>'新潟県',
+    16=>'富山県',
+    17=>'石川県',
+    18=>'福井県',
+    19=>'山梨県',
+    20=>'長野県',
+    21=>'岐阜県',
+    22=>'静岡県',
+    23=>'愛知県',
+    24=>'三重県',
+    25=>'滋賀県',
+    26=>'京都府',
+    27=>'大阪府',
+    28=>'兵庫県',
+    29=>'奈良県',
+    30=>'和歌山県',
+    31=>'鳥取県',
+    32=>'島根県',
+    33=>'岡山県',
+    34=>'広島県',
+    35=>'山口県',
+    36=>'徳島県',
+    37=>'香川県',
+    38=>'愛媛県',
+    39=>'高知県',
+    40=>'福岡県',
+    41=>'佐賀県',
+    42=>'長崎県',
+    43=>'熊本県',
+    44=>'大分県',
+    45=>'宮崎県',
+    46=>'鹿児島県',
+    47=>'沖縄県'
+);
+
+
 if(isset($_REQUEST['page']) && is_numeric($_REQUEST['page'])) {
     $page = $_REQUEST['page'];
     $limit = "LIMIT ".($page*10).",10";
@@ -50,6 +102,10 @@ if (isset($_POST['zipcode']) === TRUE){
         mysqli_free_result($result);
         mysqli_close($link);
     }
+}else if(isset($_REQUEST['pref']) === TRUE && $_REQUEST['pref'] === '0'){
+ 
+    $err_msg = '都道府県を選択してください';
+
 } else if (isset($_REQUEST['pref']) === TRUE && $_REQUEST['address'] === '' ){
 
      $err_msg = '市長区村を入力してください';
@@ -64,7 +120,7 @@ if (isset($_POST['zipcode']) === TRUE){
 
     $query = "SELECT postal_code, prefecture_katakana, district_katakana,
               street_katakana, prefecture, district, street FROM postal_data WHERE
-              prefecture = '".$pref."' AND district LIKE '%".$address."%'".$limit.";";
+              prefecture = '".$prefs[$pref]."' AND district LIKE '%".$address."%'".$limit.";";
 
     $result = mysqli_query($link, $query);
     
@@ -78,7 +134,7 @@ if (isset($_POST['zipcode']) === TRUE){
     
     $query = "SELECT postal_code, prefecture_katakana, district_katakana,
               street_katakana, prefecture, district, street FROM postal_data WHERE
-              prefecture = '".$pref."' AND district LIKE '%".$address."%';";
+              prefecture = '".$prefs[$pref]."' AND district LIKE '%".$address."%';";
     //print $query;
     
     $result = mysqli_query($link, $query);
@@ -132,6 +188,35 @@ if (isset($_POST['zipcode']) === TRUE){
         <form method="POST">
             都道府県を選択
             <select name="pref">
+<?php
+        //foreach ( $prefs as $key ) {
+//            if ( ! empty( $clean['pref'] ) ) {
+//                if ( $key === $clean['pref'] ) {
+//                    print '<option value="' . $key . '" selected>' . $pref.'あ' . '</option>';
+//                } else {
+//                    print '<option value="' . $key . '">' . $pref.'い' . '</option>';
+//                }
+//            } else {
+//               print '<option value="' . $key . '">' . $pref.'う' . '</option>';
+//            }
+    for ($i = 0; $i <= count($prefs); $i++) {   
+        if ( isset($_REQUEST['pref']) ) {
+        //if ( $_REQUEST['pref'] !== '' ) {
+            if ( $i === (int)$pref ) {
+                print '<option value="' . $i . '" selected>' . $prefs[$i] . '</option>';
+            } else {
+            print '<option value="' . $i . '">' . $prefs[$i] . '</option>';
+            }
+ 
+        }else {
+            print '<option value="' . $i . '">' . $prefs[$i] . '</option>';
+        }
+    }
+?>
+            </select>
+<!--
+</select>
+            <select name="pref">
                 <option value="都道府県を選択" >都道府県を選択</option>
                 <option value="北海道" >北海道</option>
                 <option value="青森県" >青森県</option>
@@ -181,6 +266,7 @@ if (isset($_POST['zipcode']) === TRUE){
                 <option value="鹿児島県" >鹿児島県</option>
                 <option value="沖縄県" >沖縄県</option>
             </select>
+-->
             市区町村
 <?php
             //print '<input type="hidden" name="pref" value="'.$pref.'">';
@@ -226,7 +312,8 @@ if (empty($postal_data) === FALSE){
 $max_page = ceil(count($all_data)/10);
 if ($page > 0) {
     //print '<a href=/php17/practice_post_code_advanced.php/?page='.($page-1).'&pref='.$pref.'&address='.$address.'>前へ</a>'. '　';
-    print '<a href=/dc_work_nakano_kawahito_php/htdocs/php17/practice_post_code_advanced.php/?page='.($page-1).'&pref='.$pref.'&address='.$address.'>前へ</a>'. '　';
+    //print '<a href=/dc_work_nakano_kawahito_php/htdocs/php17/practice_post_code_advanced.php/?page='.($page-1).'&pref='.$pref.'&address='.$address.'>前へ</a>'. '　';
+    print '<a href=?page='.($page-1).'&pref='.$pref.'&address='.$address.'>前へ</a>'. '';
 }
 if ($page < $max_page-1) {
     //print '<a href=/php17/practice_post_code_advanced.php/?page='.($page+1).'&pref='.$pref.'&address='.$address.'>次へ</a>'. '　';
