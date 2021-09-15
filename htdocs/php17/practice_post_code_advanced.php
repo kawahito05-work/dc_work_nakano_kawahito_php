@@ -313,12 +313,12 @@ $max_page = ceil(count($all_data)/10);
 if ($page > 0) {
     //print '<a href=/php17/practice_post_code_advanced.php/?page='.($page-1).'&pref='.$pref.'&address='.$address.'>前へ</a>'. '　';
     //print '<a href=/dc_work_nakano_kawahito_php/htdocs/php17/practice_post_code_advanced.php/?page='.($page-1).'&pref='.$pref.'&address='.$address.'>前へ</a>'. '　';
-    print '<a href=?page='.($page-1).'&pref='.$pref.'&address='.$address.'#practice_post_code_advanced.php>前へ</a>'. '';
+    print '<a href=?page='.($page-1).'&pref='.$pref.'&address='.$address.'#practice_post_code_advanced.php>前へ</a>';
 }
 if ($page < $max_page-1) {
     //print '<a href=/php17/practice_post_code_advanced.php/?page='.($page+1).'&pref='.$pref.'&address='.$address.'>次へ</a>'. '　';
     //print '<a href=/dc_work_nakano_kawahito_php/htdocs/php17/practice_post_code_advanced.php/?page='.($page+1).'&pref='.$pref.'&address='.$address.'>次へ</a>'. '　';
-    print '<a href=?page='.($page+1).'&pref='.$pref.'&address='.$address.'#practice_post_code_advanced.php>次へ</a>'. '　';
+    print '<a href=?page='.($page+1).'&pref='.$pref.'&address='.$address.'#practice_post_code_advanced.php>次へ</a>';
 }
 ?>
     </section>
