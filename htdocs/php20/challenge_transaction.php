@@ -62,7 +62,7 @@ if ($link = mysqli_connect($host, $user, $passwd, $dbname)) {
         ];
         // insertのSQL
         $sql = 'INSERT INTO point_history_table (customer_id, point_gift_id, created_at) VALUES(\'' . implode('\',\'', $data) . '\');';
-        print 'インサート'.$sql;
+        //print 'インサート'.$sql;
         // insertを実行する
        if (mysqli_query($link, $sql) === TRUE) {
         
@@ -72,16 +72,17 @@ if ($link = mysqli_connect($host, $user, $passwd, $dbname)) {
          * 発注詳細情報を挿入
          */
         // 挿入情報をまとめる
-            $sql = 'SELECT point FROM point_gift_table WHERE point_gift_id = "'.$_POST['point_gift_id'].'";';
+            $sql = 'SELECT point, name FROM point_gift_table WHERE point_gift_id = "'.$_POST['point_gift_id'].'";';
             if ($result = mysqli_query($link, $sql)){
                 while($row = mysqli_fetch_assoc($result)){
                     $gift_point = htmlspecialchars($row['point'], ENT_QUOTES, 'UTF-8');
+                    $gift_name = htmlspecialchars($row['name'], ENT_QUOTES, 'UTF-8');
                 }
 
                 // 注文詳細情報をupdateする
                 $sql = 'UPDATE point_customer_table SET point ='.($point - $gift_point).' WHERE customer_id = '.$customer_id.';';
-                // insertを実行する
-                print 'アップデート'.$sql;
+                // updateを実行する
+                //print 'アップデート'.$sql;
                 if (mysqli_query($link, $sql) !== TRUE) {
                     $err_msg[] = 'point_customer_table: updateエラー:' . $sql;
                 }
@@ -93,9 +94,16 @@ if ($link = mysqli_connect($host, $user, $passwd, $dbname)) {
     //トランザクション合否判定
     if (count($err_msg) === 0){
         mysqli_commit($link);
+        print '景品【'.$gift_name.'】を購入しました';
     } else {
         mysqli_rollback($link);
         //print '失敗';
+    }
+    $sql = 'SELECT point FROM point_gift_table WHERE point_gift_id = "'.$_POST['point_gift_id'].'";';
+    if ($result = mysqli_query($link, $sql)){
+        while($row = mysqli_fetch_assoc($result)){
+            $point = htmlspecialchars($row['point'], ENT_QUOTES, 'UTF-8');
+        }
     }
 
    }
