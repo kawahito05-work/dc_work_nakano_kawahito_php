@@ -95,16 +95,17 @@ if ($link = mysqli_connect($host, $user, $passwd, $dbname)) {
     if (count($err_msg) === 0){
         mysqli_commit($link);
         print '景品【'.$gift_name.'】を購入しました';
+        $point = $point - $gift_point;
     } else {
         mysqli_rollback($link);
         //print '失敗';
     }
-    $sql = 'SELECT point FROM point_gift_table WHERE point_gift_id = "'.$_POST['point_gift_id'].'";';
-    if ($result = mysqli_query($link, $sql)){
-        while($row = mysqli_fetch_assoc($result)){
-            $point = htmlspecialchars($row['point'], ENT_QUOTES, 'UTF-8');
-        }
-    }
+    //$sql = 'SELECT point FROM point_gift_table WHERE point_gift_id = "'.$_POST['point_gift_id'].'";';
+    //if ($result = mysqli_query($link, $sql)){
+    //    while($row = mysqli_fetch_assoc($result)){
+    //        $point = htmlspecialchars($row['point'], ENT_QUOTES, 'UTF-8');
+    //    }
+    //}
 
    }
    /**
