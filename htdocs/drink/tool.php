@@ -8,6 +8,8 @@ $price = '';
 $stock = '';
 $create_at = '';
 $update_at = '';
+$img = '';
+$err_msg = [];
 //$link = '';
 //$link = mysqli_connect($host, $user_name, $passwd, $dbname);
 
@@ -16,17 +18,46 @@ if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
     mysqli_set_charset($link, 'utf8');
 
     //追加or変更
-    if (isset($_REQUEST['sql_kind']) === TRUE){
-        //新規商品追加処理
-        if ($_REQUEST['sql_kind'] === 'insert') {
+    //トランザクション開始
+    mysqli_autocommit($link, false);
 
-            $sql = "INSERT INTO `drink_info`(`drink_id`, `name`, `price`, `created_at`, `update_at`, `public`, `image`) 
-                    VALUES ('[value-1]','[value-2]','[value-3]','[value-4]','[value-5]','[value-6]','[value-7]')";
-            print 'インサートする';
+    if (isset($_POST['sql_kind']) === TRUE){
+        //新規商品追加処理
+        if ($_POST['sql_kind'] === 'insert') {
+
+            $name = $_POST['name'];
+            $price = $_POST['price'];
+            $public = $_POST['public'];
+            $date = date('Y-m-d H:i:s');
+            $img = $_FILES['img'];
+            //$img = 'test.jpg';
+            
+            //$img = "C:\xampp\htdocs\dc_work_nakano_kawahito_php\htdocs\drink".basename($_FILES['test_A01.jpg']['40px']);
+            //$img = $_FILES['userfile']['img'];
+            //header('Content-type: image/jpg');
+            
+            //$uploaddir = '/var/www/uploads/';
+            //$uploadfile = $uploaddir . basename($_FILES['userfile']['name']);
+
+            //header('Content-type: image/jpeg');
+            //readfile('test.jpg');
+            //readfile($img);
+
+            $sql = "INSERT INTO `drink_info`(`name`, `price`, `created_at`, `update_at`, `public`, `image`) 
+                    VALUES ('".$name."','".$price."','".$date."','".$date."','".$public."','"."');";
+            print 'インサートする'.$sql;
+            //print $img;
             
 
         }
     }
+
+    if (count($err_msg) === 0){
+        mysqli_commit($link);
+    } else {
+        mysqli_rollback($link);
+    }
+
     mysqli_close($link);
 }
 ?>
@@ -41,14 +72,13 @@ if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
 <body>
     <h1>自動販売管理ツール</h1>
     <section>
-        <form>
+        <form enctype="multipart/form-data" action="" method="POST">
             <h2>新規商品追加</h2>
-            <div><label>名前:<input type="text" name="new_name"></label></div>
-            <div><label>値段:<input type="text" name="new_price"></label></div>
-            <div><label>個数:<input type="text" name="new_stock"></label></div>
-            <div><input type="file" name="new_img">
-            <div>
-                <select name="new_status">
+            <div><label>名前:<input type="text" name="name"></label></div>
+            <div><label>値段:<input type="text" name="price"></label></div>
+            <div><label>個数:<input type="text" name="stock"></label></div>
+            <div><input type="file" name="img"><div>
+                <select name="public">
                     <option value="0">非公開</option>
                     <option value="1">公開</option>
                 </select>
