@@ -21,42 +21,44 @@ if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
     //トランザクション開始
     mysqli_autocommit($link, false);
 
-    if (isset($_POST['sql_type']) === TRUE){
+    if (isset($_POST['sql_kind']) === TRUE){
         //新規商品追加処理
-        if ($_POST['sql_type'] === 'insert') {
+        if ($_POST['sql_kind'] === 'insert') {
 
             $name = $_POST['name'];
             $price = $_POST['price'];
             $public = $_POST['public'];
             $date = date('Y-m-d H:i:s');
-
+            $img = $_FILES['img'];
 
             $uploaddir = 'uploads/';
-            $uploadfile = $uploaddir . basename($_FILES['userfile']['name']);
+            $uploadfile = $uploaddir.basename($_FILES['img']['name']);
 
             echo '<pre>';
-            if (move_uploaded_file($_FILES['userfile']['tmp_name'], $uploadfile)) {
+            if (move_uploaded_file($_FILES['img']['name'], $uploadfile)) {
                 echo "File is valid, and was successfully uploaded.\n";
+                $img_path = $uploadfile.$_FILES['img']['name'];
             } else {
                 echo "Possible file upload attack!\n";
             }
 
+
+            print $_FILES['img']['name'];
+            print $uploadfile;
+
+
             echo 'Here is some more debugging info:';
-            print $_FILES['userfile']['tmp_name'];
             print_r($_FILES);
 
             print "</pre>";
 
-            $img = $_FILES['userfile']['tmp_name'];
-
+            print "^^^^".$_FILES['img']['name']."^^^^";
+            print "^^^^".$uploadfile."^^^^";
+            print "^^^^".$uploadfile."^^^^";
 
             $sql = "INSERT INTO `drink_info`(`name`, `price`, `created_at`, `update_at`, `public`, `image`) 
                     VALUES ('".$name."','".$price."','".$date."','".$date."','".$public."','"."');";
             print 'インサートする'.$sql;
-            //print $img;
-            print '<img src="<?='.$img.'?>">';
-            
-
         }
     }
 
@@ -94,21 +96,22 @@ $test = './uploads/test.jpg';
     //print '<img src="'.$uploadfile.'" alt="">';
 ?>
 
+
+
     <h1>自動販売管理ツール</h1>
     <section>
-        <form enctype="multipart/form-data" action="tool.php" method="POST">
+        <form enctype="multipart/form-data" action="" method="POST">
             <h2>新規商品追加</h2>
             <div><label>名前:<input type="text" name="name"></label></div>
             <div><label>値段:<input type="text" name="price"></label></div>
             <div><label>個数:<input type="text" name="stock"></label></div>
-            <input type="hidden" name="MAX_FILE_SIZE" value="30000" />
-            <div><input type="file" name="userfile"><div>
+            <div><input type="file" name="img"><div>
                 <select name="public">
                     <option value="0">非公開</option>
                     <option value="1">公開</option>
                 </select>
             </div>
-            <input type="hidden" name="sql_type" value="insert">
+            <input type="hidden" name="sql_kind" value="insert">
             <div><input type="submit" value="■□■□■商品追加■□■□■"></div>
         </form>
     </section>
