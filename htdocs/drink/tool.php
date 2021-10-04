@@ -11,7 +11,7 @@ $update_at = '';
 $img = '';
 $err_msg = [];
 //$link = '';
-//$link = mysqli_connect($host, $user_name, $passwd, $dbname);
+$link = mysqli_connect($host, $user_name, $passwd, $dbname);
 
 if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
 
@@ -23,12 +23,28 @@ if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
 
     if (isset($_POST['sql_type']) === TRUE){
         //新規商品追加処理
+
         if ($_POST['sql_type'] === 'insert') {
+            
+            if ($_POST['name'] === ''){
+                $err_msg[] = '名前を入力してください';
+            } 
+            if ($_POST['price'] === ''){
+                $err_msg[] = '値段を入力してください';
+            } 
+            if ($_POST['stock'] === ''){
+                $err_msg[] = '在庫を入力してください';
+            } 
+            if ($_FILES['userfile']['error'] !== 0){
+                $err_msg[] = 'ファイルを選択してください';
+            }
+
 
             $name = $_POST['name'];
             $price = $_POST['price'];
             $public = $_POST['public'];
             $date = date('Y-m-d H:i:s');
+
 
             $uploaddir = 'uploads/';
             $uploadfile = $uploaddir . basename($_FILES['userfile']['name']);
@@ -40,55 +56,39 @@ if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
                 echo "Possible file upload attack!\n";
             }
 
+            
+            $file_name=md5(uniqid(rand(), true));
+            $file_name .= '.jpg';
 
-            $img_data = file_get_contents($uploadfile);
-            print $img_data;
+            if (count($err_msg) === 0){
+                if ( rename( $uploadfile, $uploaddir . $file_name ) ) {
+                    echo "ファイル名の変更に成功しました";
+                    $img_data = $uploaddir . $file_name;
+                } else {
+                    echo "ファイル名の変更に失敗しました";
+                }
+            }
 
-            //$img_data = file_get_contents($_FILES['userfile']['tmp_name']);
             //$img_data = file_get_contents($uploadfile);
-            //header('Content-type: image/jpeg');
-            //readfile($img_data);
-            //print $img_data;
-            //echo '<img src="data:image/img;base64,' . base64_encode($img_data->fetchAll()[0]['img']) . '>';
-            //echo '<img src="data:image/gif;base64,' . base64_encode($stmt->fetchAll()[0]['img']) . '>';
+
             echo 'Here is some more debugging info:';
-            print $_FILES['userfile']['tmp_name'];
+            //print $_FILES['userfile']['tmp_name'];
             print_r($_FILES);
 
             print "</pre>";
 
             $img = $_FILES['userfile']['tmp_name'];
 
-            $img_name = $_FILES['userfile']['name'];
-            $img_type = $_FILES['userfile']['type'];
-            $img_content = file_get_contents($_FILES['userfile']['tmp_name']);
-            $img_size = $_FILES['userfile']['size'];
-
 
             $sql = "INSERT INTO `drink_info`(`name`, `price`, `created_at`, `update_at`, `public`, `image`) 
-                    VALUES ('".$name."','".$price."','".$date."','".$date."','".$public."','"."');";
-            //$sql = "INSERT INTO `drink_info`(`name`, `price`, `created_at`, `update_at`, `public`,
-            //       image_type, image_content, image_size) 
-            //        VALUES ('".$name."','".$price."','".$date."','".$date."','".$public."','"."'
-            //        , '.$img_type.', '.$img_content.', :'.$img_size);";
+                    VALUES ('".$name."','".$price."','".$date."','".$date."','".$public."','".$img_data."');";
+            
             print 'インサートする'.$sql;
             //print $img;
             if (mysqli_query($link, $sql) !== TRUE) {
                 $err_msg[] = 'order_detail_table: insertエラー:' . $sql;
             } 
             print '<img src="<?='.$img.'?>">';
-
-            //$img_name = $_FILES['image']['name'];
-            //$img_type = $_FILES['image']['type'];
-            //$img_content = file_get_contents($_FILES['image']['tmp_name']);
-            //$img_size = $_FILES['image']['size'];
-    
-            //$sql = 'INSERT INTO drink_img(img_name, image_type, image_content, image_size )
-            //        VALUES ('.$img_name.', '.$img_type.', '.$img_content.', :'.$img_size.', now())';
-
-            //if (mysqli_query($link, $sql) !== TRUE) {
-            //    $err_msg[] = 'order_detail_table: insertエラー:' . $sql;
-            //}
         }
     }
 
@@ -98,8 +98,34 @@ if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
         mysqli_rollback($link);
     }
 
-    //mysqli_free_result($result);
+
+    $sql = 'SELECT drink_id,name, price, image FROM drink_info';
+    // クエリ実行
+    if ($result = mysqli_query($link, $sql)) {
+        $i = 0;
+        while ($row = mysqli_fetch_assoc($result)) {
+            $drink_list[$i]['id'] = htmlspecialchars($row['drink_id'], ENT_QUOTES, 'UTF-8');
+            $drink_list[$i]['name'] = htmlspecialchars($row['name'], ENT_QUOTES, 'UTF-8');
+            $drink_list[$i]['price'] = htmlspecialchars($row['price'], ENT_QUOTES, 'UTF-8');
+            $drink_list[$i]['image'] = htmlspecialchars($row['image'], ENT_QUOTES, 'UTF-8');
+            //$drink_id = htmlspecialchars($row['drink_id'], ENT_QUOTES, 'UTF-8');
+            //$drink_img = htmlspecialchars($row['image'], ENT_QUOTES, 'UTF-8');
+            $i++;
+        }
+    } else {
+        $err_msg[] = 'SQL失敗:' . $sql;
+        print 'select失敗';
+    }
+
+    //print "\n";
+    //print $drink_id;
+    //print "test".$drink_img;
+
+    mysqli_free_result($result);
     mysqli_close($link);
+}
+for ($i = 0; $i < count($err_msg); $i++) {
+    print $err_msg[$i]."<br>";
 }
 ?>
 <!DOCTYPE html>
@@ -107,25 +133,9 @@ if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
 <head>
     <meta charset="utf-8">
     <title></title>
-    <style>
-    </style>
+    <style></style>
 </head>
 <body>
-
-
-<?php
-//print $uploadfile;
-$test = './uploads/test.jpg';
-//header('Content-type: image/jpeg');
-//readfile('test.jpg');
-?>
-<!-- （5）ローカルフォルダに移動した画像を画面に表示する -->
- <img src="<?php echo $test;?>" alt="">
- <!-- <img src="data:image/jpg;base64,<?php echo $test ?>"> -->
-
-<?php
-    //print '<img src="'.$uploadfile.'" alt="">';
-?>
 
     <h1>自動販売管理ツール</h1>
     <section>
@@ -144,6 +154,24 @@ $test = './uploads/test.jpg';
             <input type="hidden" name="sql_type" value="insert">
             <div><input type="submit" value="■□■□■商品追加■□■□■"></div>
         </form>
+
+
+        <form method="post">
+           <ul>
+            <?php       foreach ($drink_list as $item) { ?>
+               <li>
+                   <!-- <span><?php print $item['id']; ?></span> 
+                   <span><?php print $item['image']; ?></span> -->
+                   <span><?php print '<img src="'.$item['image'].'">'; ?></span>
+                   <span><?php print $item['name']; ?></span>
+                   <span><?php print $item['price']; ?></span>
+                   <!-- <span><div><label><input type="text" name="stock" value="<?php print $item['image']; ?>"></label></div></span> -->
+               </li>
+            <?php    } ?>
+            <!-- <img src="uploads/2c9a0b78f71f73643638a3a64ec96704.jpg.jpg"> -->
+           </ul>
+       </form>
+
     </section>
 </body>
 </html>
