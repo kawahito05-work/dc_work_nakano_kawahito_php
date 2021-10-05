@@ -37,7 +37,13 @@ if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
             } 
             if ($_POST['stock'] === ''){
                 $err_msg[] = '在庫を入力してください';
-            } 
+            }
+            if (is_numeric($_POST['price']) === FALSE){
+                $err_msg[] = '値段は半角数字を入力してください';
+            }
+            if (is_numeric($_POST['stock']) === FALSE){
+                $err_msg[] = '在庫は半角数字を入力してください';
+            }
             if ($_FILES['userfile']['error'] !== 0){
                 $err_msg[] = 'ファイルを選択してください';
             }
@@ -128,8 +134,12 @@ if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
             $id = $_POST['id'];
             //在庫変更処理
             if (isset($_POST['stock']) === TRUE){
-                print '在庫更新';
+                //print '在庫更新';
                 
+                if (is_numeric($_POST['stock']) === FALSE){
+                    $err_msg[] = '在庫は半角数字を入力してください';
+                }
+
                 $stock = $_POST['stock'];
                 $sql = "UPDATE `drink_stock` SET `stock`='".$stock."' WHERE drink_id='".$id."';";
 
@@ -139,7 +149,7 @@ if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
 
             //ステータス変更処理
             } else if (isset($_POST['public']) === TRUE){
-                print 'ステータス更新';
+                //print 'ステータス更新';
 
                 $public = $_POST['public'];
                 $sql = "UPDATE `drink_info` SET `public`='".$public."' WHERE drink_id='".$id."';";
