@@ -9,15 +9,12 @@ $stock = '';
 $create_at = '';
 $update_at = '';
 $img = '';
+$img_data = '';
 $drink_list = [];
 $err_msg = [];
 $drink_id;
 //$link = '';
 $link = mysqli_connect($host, $user_name, $passwd, $dbname);
-
-
-print $_POST['public'];
-print $_POST['stock'];
 
 if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
 
@@ -28,8 +25,8 @@ if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
     mysqli_autocommit($link, false);
 
     if (isset($_POST['sql_type']) === TRUE){
-        //新規商品追加処理
 
+        //商品追加処理
         if ($_POST['sql_type'] === 'insert') {
             
             if ($_POST['name'] === ''){
@@ -65,16 +62,17 @@ if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
             $public = $_POST['public'];
             $date = date('Y-m-d H:i:s');
 
-
             $uploaddir = 'uploads/';
             $uploadfile = $uploaddir . basename($_FILES['userfile']['name']);
 
             echo '<pre>';
-            if (move_uploaded_file($_FILES['userfile']['tmp_name'], $uploadfile)) {
-                echo "File is valid, and was successfully uploaded.\n";
-            } else {
-                echo "Possible file upload attack!\n";
-            }
+            move_uploaded_file($_FILES['userfile']['tmp_name'], $uploadfile);
+            //if (move_uploaded_file($_FILES['userfile']['tmp_name'], $uploadfile)) {
+                //echo "File is valid, and was successfully uploaded.\n";
+            //}
+                //} else {
+                //echo "Possible file upload attack!\n";
+            //}
 
             
             $file_name=md5(uniqid(rand(), true));
@@ -89,21 +87,18 @@ if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
                 }
             }
 
-            //$img_data = file_get_contents($uploadfile);
-
-            echo 'Here is some more debugging info:';
+            //echo 'Here is some more debugging info:';
             //print $_FILES['userfile']['tmp_name'];
-            print_r($_FILES);
+            //print_r($_FILES);
 
             print "</pre>";
 
             $img = $_FILES['userfile']['tmp_name'];
 
-
             $sql = "INSERT INTO `drink_info`(`drink_id`, `name`, `price`, `create_at`, `update_at`, `public`, `image`) 
                     VALUES ('".($drink_id + 1)."', '".$name."','".$price."','".$date."','".$date."','".$public."','".$img_data."');";
             
-            print 'インサートする'.$sql;
+            //print 'インサートする'.$sql;
             //print $img;
             if (mysqli_query($link, $sql) !== TRUE) {
                 $err_msg[] = 'drink_info: insertエラー:' . $sql;
@@ -111,7 +106,7 @@ if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
 
             $sql = "INSERT INTO `drink_history`(`drink_id`, `bought_at`) VALUES ('".($drink_id + 1)."', '".$date."');";
     
-            print 'インサートする'.$sql;
+            //print 'インサートする'.$sql;
             //print $img;
             if (mysqli_query($link, $sql) !== TRUE) {
                 $err_msg[] = 'drink_history: insertエラー:' . $sql;
@@ -121,12 +116,39 @@ if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
             $sql = "INSERT INTO `drink_stock`(`drink_id`,`stock`, `create_at`, `update_at`) 
                     VALUES ('".($drink_id + 1)."', '".$stock."','".$date."','".$date."');";
             
-            print 'インサートする'.$sql;
+            //print 'インサートする'.$sql;
             //print $img;
             if (mysqli_query($link, $sql) !== TRUE) {
                 $err_msg[] = 'drink_stock: insertエラー:' . $sql;
             }
-            print '<img src="<?='.$img.'?>">';
+
+        //在庫orステータス変更
+        } else if ($_POST['sql_type'] === 'update'){
+
+            $id = $_POST['id'];
+            //在庫変更処理
+            if (isset($_POST['stock']) === TRUE){
+                print '在庫更新';
+                
+                $stock = $_POST['stock'];
+                $sql = "UPDATE `drink_stock` SET `stock`='".$stock."' WHERE drink_id='".$id."';";
+
+                if (mysqli_query($link, $sql) !== TRUE ){
+                    $err_msg[] = '在庫: updateエラー:' . $sql;
+                }
+
+            //ステータス変更処理
+            } else if (isset($_POST['public']) === TRUE){
+                print 'ステータス更新';
+
+                $public = $_POST['public'];
+                $sql = "UPDATE `drink_info` SET `public`='".$public."' WHERE drink_id='".$id."';";
+
+                print $sql;
+                if (mysqli_query($link, $sql) !== TRUE ){
+                    $err_msg[] = 'ステータス: updateエラー:' . $sql;
+                }
+            }
         }
     }
 
@@ -212,16 +234,18 @@ for ($i = 0; $i < count($err_msg); $i++) {
                         <form method="post">
                             <input type="text" name="stock" value="<?php print $item['stock']; ?>">
                             <input type="hidden" name="sql_type" value="update">
+                            <input type="hidden" name="id" value=<?php echo $item['id']; ?>>
                             <input type="submit" value="変更">
                         </form>
                         </td>
                         <?php
-                        if ( $item['public'] === 1 ){
+                        if ( $item['public'] === "1" ){
                         ?>
                             <td>
                                 <form method="post">
                                     <input type="submit" value="公開→非公開">
                                     <input type="hidden" name="public" value=0>
+                                    <input type="hidden" name="id" value=<?php echo $item['id']; ?>>
                                     <input type="hidden" name="sql_type" value="update">
                                 </form>
                             </td>
@@ -231,6 +255,7 @@ for ($i = 0; $i < count($err_msg); $i++) {
                             <td>
                                 <form method="post">
                                     <input type="submit" value="非公開→公開">
+                                    <input type="hidden" name="id" value=<?php echo $item['id']; ?>>
                                     <input type="hidden" name="public" value=1>
                                     <input type="hidden" name="sql_type" value="update">
                                 </form>
