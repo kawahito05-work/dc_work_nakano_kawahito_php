@@ -101,17 +101,20 @@ if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
 
             $img = $_FILES['userfile']['tmp_name'];
 
-            $sql = "INSERT INTO `drink_info`(`drink_id`, `name`, `price`, `create_at`, `update_at`, `public`, `image`) 
-                    VALUES ('".($drink_id + 1)."', '".$name."','".$price."','".$date."','".$date."','".$public."','".$img_data."');";
-            
+            $sql = "INSERT INTO `drink_info`(`name`, `price`, `create_at`, `update_at`, `public`, `image`) 
+                    VALUES ('".$name."','".$price."','".$date."','".$date."','".$public."','".$img_data."');";
+            //$sql = "INSERT INTO `drink_info`(`drink_id`, `name`, `price`, `create_at`, `update_at`, `public`, `image`) 
+            //        VALUES ('".($drink_id + 1)."', '".$name."','".$price."','".$date."','".$date."','".$public."','".$img_data."');";
+
             //print 'インサートする'.$sql;
             //print $img;
             if (mysqli_query($link, $sql) !== TRUE) {
                 $err_msg[] = 'drink_info: insertエラー:' . $sql;
             }
 
+            $drink_id = mysqli_isert_id($link);
+            //$sql = "INSERT INTO `drink_history`(`bought_at`) VALUES ('".$date."');";
             $sql = "INSERT INTO `drink_history`(`drink_id`, `bought_at`) VALUES ('".($drink_id + 1)."', '".$date."');";
-    
             //print 'インサートする'.$sql;
             //print $img;
             if (mysqli_query($link, $sql) !== TRUE) {
@@ -121,7 +124,10 @@ if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
 
             $sql = "INSERT INTO `drink_stock`(`drink_id`,`stock`, `create_at`, `update_at`) 
                     VALUES ('".($drink_id + 1)."', '".$stock."','".$date."','".$date."');";
-            
+            //$sql = "INSERT INTO `drink_stock`(`stock`, `create_at`, `update_at`) 
+            //         VALUES ($stock."','".$date."','".$date."');";
+
+
             //print 'インサートする'.$sql;
             //print $img;
             if (mysqli_query($link, $sql) !== TRUE) {
