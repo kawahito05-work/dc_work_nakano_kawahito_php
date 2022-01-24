@@ -112,7 +112,7 @@ if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
                 $err_msg[] = 'drink_info: insertエラー:' . $sql;
             }
 
-            $drink_id = mysqli_isert_id($link);
+            $drink_id = mysqli_insert_id($link);
             //$sql = "INSERT INTO `drink_history`(`bought_at`) VALUES ('".$date."');";
             $sql = "INSERT INTO `drink_history`(`drink_id`, `bought_at`) VALUES ('".($drink_id + 1)."', '".$date."');";
             //print 'インサートする'.$sql;
@@ -223,7 +223,7 @@ for ($i = 0; $i < count($err_msg); $i++) {
             <div><label>名前:<input type="text" name="name"></label></div>
             <div><label>値段:<input type="text" name="price"></label></div>
             <div><label>個数:<input type="text" name="stock"></label></div>
-            <input type="hidden" name="MAX_FILE_SIZE" value="30000" />
+            <input type="hidden" name="MAX_FILE_SIZE" value="300000" />
             <div><input type="file" name="userfile"><div>
                 <select name="public">
                     <option value="0">非公開</option>
