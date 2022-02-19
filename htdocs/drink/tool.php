@@ -114,7 +114,8 @@ if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
 
             $drink_id = mysqli_insert_id($link);
             //$sql = "INSERT INTO `drink_history`(`bought_at`) VALUES ('".$date."');";
-            $sql = "INSERT INTO `drink_history`(`drink_id`, `bought_at`) VALUES ('".($drink_id + 1)."', '".$date."');";
+            //$sql = "INSERT INTO `drink_history`(`drink_id`, `bought_at`) VALUES ('".($drink_id + 1)."', '".$date."');";
+            $sql = "INSERT INTO `drink_history`(`drink_id`, `bought_at`) VALUES ('".$drink_id."', '".$date."');";
             //print 'インサートする'.$sql;
             //print $img;
             if (mysqli_query($link, $sql) !== TRUE) {
@@ -122,8 +123,10 @@ if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
             }
 
 
+            //$sql = "INSERT INTO `drink_stock`(`drink_id`,`stock`, `create_at`, `update_at`) 
+            //        VALUES ('".($drink_id + 1)."', '".$stock."','".$date."','".$date."');";
             $sql = "INSERT INTO `drink_stock`(`drink_id`,`stock`, `create_at`, `update_at`) 
-                    VALUES ('".($drink_id + 1)."', '".$stock."','".$date."','".$date."');";
+                    VALUES ('".$drink_id."', '".$stock."','".$date."','".$date."');";
             //$sql = "INSERT INTO `drink_stock`(`stock`, `create_at`, `update_at`) 
             //         VALUES ($stock."','".$date."','".$date."');";
 
@@ -209,13 +212,12 @@ for ($i = 0; $i < count($err_msg); $i++) {
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="drink.css">
     <title></title>
     <style></style>
-    <link rel="stylesheet" href="drink.css">
 </head>
 <body>
-
     <h1>自動販売管理ツール</h1>
     <section>
         <form enctype="multipart/form-data" action="tool.php" method="POST">
@@ -242,7 +244,17 @@ for ($i = 0; $i < count($err_msg); $i++) {
                     <td>ステータス</td>
                 </tr>
                 <?php       foreach ($drink_list as $item) { ?>
-                    <tr>
+                    <?php
+                        if ( $item['public'] === "1" ) {
+                        ?>
+                        <tr class="private">
+                        <?php
+                        }else{
+                        ?>
+                        <tr class="private">
+                        <?php
+                        }
+                        ?>
                         <td><?php print '<img src="'.$item['image'].'">'; ?></td>
                         <td><?php print $item['name']; ?></td>
                         <td><?php print $item['price']; ?></td>

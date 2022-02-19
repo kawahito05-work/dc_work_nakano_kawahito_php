@@ -7,6 +7,10 @@ table {
     border: #000 solid;
 }
 
+tr {
+   background: #666;
+}
+
 td {
     border: #000 solid;
 }
