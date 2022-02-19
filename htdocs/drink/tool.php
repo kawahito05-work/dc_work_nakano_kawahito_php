@@ -213,7 +213,7 @@ for ($i = 0; $i < count($err_msg); $i++) {
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="drink.css">
+    <link rel="stylesheet" href="tool.css">
     <title></title>
     <style></style>
 </head>
@@ -247,7 +247,7 @@ for ($i = 0; $i < count($err_msg); $i++) {
                     <?php
                         if ( $item['public'] === "1" ) {
                         ?>
-                        <tr class="private">
+                        <tr>
                         <?php
                         }else{
                         ?>
