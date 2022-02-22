@@ -18,7 +18,7 @@ $link = mysqli_connect($host, $user_name, $passwd, $dbname);
 
 if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
 
-    mysqli_set_charset($link, 'utf8');
+    mysqli_set_charset($link, 'UTF-8');
 
     //追加or変更
     //トランザクション開始
@@ -106,7 +106,7 @@ if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
             //$sql = "INSERT INTO `drink_info`(`drink_id`, `name`, `price`, `create_at`, `update_at`, `public`, `image`) 
             //        VALUES ('".($drink_id + 1)."', '".$name."','".$price."','".$date."','".$date."','".$public."','".$img_data."');";
 
-            //print 'インサートする'.$sql;
+            print 'インサートする'.$sql;
             //print $img;
             if (mysqli_query($link, $sql) !== TRUE) {
                 $err_msg[] = 'drink_info: insertエラー:' . $sql;
@@ -177,13 +177,15 @@ if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
         mysqli_rollback($link);
     }
 
-
     $sql = 'SELECT drink_info.drink_id,drink_info.name, drink_info.price, drink_info.public, drink_info.image, drink_stock.stock
     FROM drink_info INNER JOIN drink_stock on drink_info.drink_id = drink_stock.drink_id;';
+
     //print 'select失敗'.$sql;
     // クエリ実行
     if ($result = mysqli_query($link, $sql)) {
+
         $i = 0;
+
         while ($row = mysqli_fetch_assoc($result)) {
             $drink_list[$i]['id'] = htmlspecialchars($row['drink_id'], ENT_QUOTES, 'UTF-8');
             $drink_list[$i]['name'] = htmlspecialchars($row['name'], ENT_QUOTES, 'UTF-8');
@@ -193,7 +195,9 @@ if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
             $drink_list[$i]['stock'] = htmlspecialchars($row['stock'], ENT_QUOTES, 'UTF-8');
             $i++;
         }
+
     } else {
+
         $err_msg[] = 'SQL失敗:' . $sql;
         print 'select失敗'.$sql;
     }
@@ -201,10 +205,10 @@ if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
     //print "\n";
     //print $drink_id;
     //print "test".$drink_img;
-
     mysqli_free_result($result);
     mysqli_close($link);
 }
+
 for ($i = 0; $i < count($err_msg); $i++) {
     print $err_msg[$i]."<br>";
 }

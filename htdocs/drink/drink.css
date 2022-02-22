@@ -7,7 +7,7 @@ table {
     border: #000 solid;
 }
 
-tr {
+tr.private {
    background: #666;
 }
 
