@@ -102,7 +102,7 @@ if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
             $img = $_FILES['userfile']['tmp_name'];
 
             $sql = "INSERT INTO `drink_info`(`name`, `price`, `create_at`, `update_at`, `public`, `image`) 
-                    VALUES (N'".$name."','".$price."','".$date."','".$date."','".$public."','".$img_data."');";
+                    VALUES ('".$name."','".$price."','".$date."','".$date."','".$public."','".$img_data."');";
             //$sql = "INSERT INTO `drink_info`(`drink_id`, `name`, `price`, `create_at`, `update_at`, `public`, `image`) 
             //        VALUES ('".($drink_id + 1)."', '".$name."','".$price."','".$date."','".$date."','".$public."','".$img_data."');";
 

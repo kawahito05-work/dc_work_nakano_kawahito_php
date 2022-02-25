@@ -1,0 +1,12 @@
+.inline {
+   display: inline;
+}
+
+.drink {
+   display: flex;
+}
+
+img {
+   width: 114px;
+   height: 125px;
+}

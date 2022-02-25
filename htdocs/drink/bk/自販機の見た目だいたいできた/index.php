@@ -13,7 +13,7 @@ if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
 
     $sql = 'SELECT drink_info.drink_id, drink_info.name, drink_info.price , drink_info.image 
             FROM drink_info INNER JOIN drink_stock on drink_info.drink_id = drink_stock.drink_id;';
-    print $sql;
+
     //print 'select失敗'.$sql;
     // クエリ実行
     if ($result = mysqli_query($link, $sql)){
@@ -61,10 +61,10 @@ if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
                 ?>
                     <td>
                         <ul>
-                            <li><?php print '<img src="'.$item['image'].'">'; ?></li>
-                            <li><?php print $item['name']; ?></li>
-                            <li><?php print $item['price']; ?></li>
-                            <li><?php print '<input type="radio" name="drink_id" value="'.$item['id'].'">' ?></li>
+                            <li><span><?php print '<img src="'.$item['image'].'" class="photo">'; ?></span></li>
+                            <li><span><?php print $item['name']; ?></span></li>
+                            <li><span><?php print $item['price']; ?></span></li>
+                            <li><span><?php print '<input type="radio" name="drink_id" value="'.$item['id'].'">' ?></span></li>
                         </ul>
                     </td>
                 <?php

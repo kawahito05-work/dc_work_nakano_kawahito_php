@@ -7,6 +7,11 @@ li {
    text-align: center;
 }
 
+.li span{
+   display: block;
+   text-align: center;
+}
+
 ul {
    list-style: none;
 }

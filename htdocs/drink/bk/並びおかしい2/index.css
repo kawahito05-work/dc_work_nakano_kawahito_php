@@ -2,16 +2,12 @@
    display: flex;
 }
 
-li {
+.li span{
    display: block;
    text-align: center;
 }
 
-ul {
-   list-style: none;
+.li > nth-of-type(4n + 1) {
+  margin-left: 0;
 }
 
-img {
-   width: 114px;
-   height: 125px;
-}

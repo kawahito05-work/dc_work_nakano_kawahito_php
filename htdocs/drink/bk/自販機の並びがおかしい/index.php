@@ -13,7 +13,7 @@ if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
 
     $sql = 'SELECT drink_info.drink_id, drink_info.name, drink_info.price , drink_info.image 
             FROM drink_info INNER JOIN drink_stock on drink_info.drink_id = drink_stock.drink_id;';
-    print $sql;
+
     //print 'select失敗'.$sql;
     // クエリ実行
     if ($result = mysqli_query($link, $sql)){
@@ -51,29 +51,27 @@ if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
     <h1>自動販売機</h1>
     <form enctype="multipart/form-data" action="result.php" method="POST">
         <div><label>金額:<input type="text" name="payment"></label></div>
-            <table>
-                <?php 
-                foreach($drink_list as $index => $item) {
-                if ( $index%4 === 0){
-                    print "<tr>";
-                    //print "ココで折り返し".$index;
-                }
-                ?>
-                    <td>
-                        <ul>
-                            <li><?php print '<img src="'.$item['image'].'">'; ?></li>
-                            <li><?php print $item['name']; ?></li>
-                            <li><?php print $item['price']; ?></li>
-                            <li><?php print '<input type="radio" name="drink_id" value="'.$item['id'].'">' ?></li>
-                        </ul>
-                    </td>
-                <?php
-                    if ( $index%4 === 3 ){
-                        print "</tr>";
+            <div class="inline">
+            <?php foreach($drink_list as $item) {
+                    print "ここは".$j."番目";
+                    if ( $j%4 === 0){
+                        //print "<div class=&quot;drink&quot;>";
+                        print $j."ここで折り返し";
+                        print "<div>";
                     }
+                ?>
+                    <span><?php print '<img src="'.$item['image'].'" class="photo">'; ?></span>
+                    <span><?php print $item['name']; ?></span>
+                    <span><?php print $item['price']; ?></span>
+                    <span><?php print '<input type="radio" name="drink_id" value="'.$item['id'].'">' ?></span>
+                <?php
+                    if ( $j%4 === 0){
+                        print "</div>";
+                    }
+                    $j++;
                 } ?>
-            </table>
-        <input type="submit" value="■□■□■購入■□■□■">
+            </div>
+        <input type="submit" value="■□■□■商品追加■□■□■">
     </form>
     </body>
 </html>
