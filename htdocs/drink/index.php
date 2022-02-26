@@ -63,6 +63,7 @@ if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
                         <ul>
                             <li><?php print '<img src="'.$item['image'].'">'; ?></li>
                             <li><?php print $item['name']; ?></li>
+                            <!--<li><?php print $item['name']."文字コード".mb_detect_encoding($item['name']); ?></li>-->
                             <li><?php print $item['price']; ?></li>
                             <li><?php print '<input type="radio" name="drink_id" value="'.$item['id'].'">' ?></li>
                         </ul>

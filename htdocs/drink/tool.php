@@ -261,7 +261,9 @@ for ($i = 0; $i < count($err_msg); $i++) {
                         }
                         ?>
                         <td><?php print '<img src="'.$item['image'].'">'; ?></td>
-                        <td><?php print $item['name']; ?></td>
+                        <td><?php print $item['name']."文字コード".mb_detect_encoding($item['name'])."文字コード変換".mb_convert_encoding($item['name'], "UTF-8", "auto"); ?></td>
+                        <!--<td><?php print $item['name']; ?></td>-->
+                        <!--<td><?php print mb_convert_encoding($item['name'], "UTF-8", "auto"); ?></td>-->
                         <td><?php print $item['price']; ?></td>
                         <td>
                         <form method="post">
