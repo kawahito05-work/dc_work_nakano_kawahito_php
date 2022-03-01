@@ -1,0 +1,17 @@
+.list {
+   display: flex;
+}
+
+li {
+   display: block;
+   text-align: center;
+}
+
+ul {
+   list-style: none;
+}
+
+img {
+   width: 114px;
+   height: 125px;
+}

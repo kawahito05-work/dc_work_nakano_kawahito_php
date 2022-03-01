@@ -307,6 +307,7 @@ for ($i = 0; $i < count($err_msg); $i++) {
                     </tr>
                 <?php    } ?>
             </table>
+
     </section>
 </body>
 </html>
