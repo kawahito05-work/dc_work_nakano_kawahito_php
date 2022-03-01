@@ -15,3 +15,7 @@ img {
    width: 114px;
    height: 125px;
 }
+
+.sold {
+   color: red;
+}

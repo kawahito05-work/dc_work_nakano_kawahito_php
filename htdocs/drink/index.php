@@ -11,8 +11,8 @@ if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
 
     mysqli_set_charset($link,'utf8');
 
-    $sql = 'SELECT drink_info.drink_id, drink_info.name, drink_info.price , drink_info.image 
-            FROM drink_info INNER JOIN drink_stock on drink_info.drink_id = drink_stock.drink_id;';
+    $sql = "SELECT drink_info.drink_id, drink_info.name, drink_info.price , drink_info.image ,drink_stock.stock
+            FROM drink_info INNER JOIN drink_stock on drink_info.drink_id = drink_stock.drink_id WHERE drink_info.public = '1';";
     print $sql;
     //print 'select失敗'.$sql;
     // クエリ実行
@@ -26,6 +26,7 @@ if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
             $drink_list[$i]['name'] = htmlspecialchars($row['name'],ENT_QUOTES,'UTF-8');
             $drink_list[$i]['price'] = htmlspecialchars($row['price'],ENT_QUOTES,'UTF-8');
             $drink_list[$i]['image'] = htmlspecialchars($row['image'],ENT_QUOTES,'UTF-8');
+            $drink_list[$i]['stock'] = htmlspecialchars($row['stock'],ENT_QUOTES,'UTF-8');
             $i++;
         }
 
@@ -64,9 +65,19 @@ if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
                         <ul>
                             <li><?php print '<img src="'.$item['image'].'">'; ?></li>
                             <li><?php print $item['name']; ?></li>
-                            <li><?php print $item['name']."文字コード".mb_detect_encoding($item['name']); ?></li>
                             <li><?php print $item['price']; ?></li>
+
+                            <?php
+                            if ($item['stock'] >= 1){
+                            ?>
                             <li><?php print '<input type="radio" name="drink_id" value="'.$item['id'].'">' ?></li>
+                            <?php
+                            }else{
+                            ?>
+                            <li class="sold">売り切れ<li>
+                            <?php
+                            }
+                            ?>
                         </ul>
                     </td>
                 <?php
