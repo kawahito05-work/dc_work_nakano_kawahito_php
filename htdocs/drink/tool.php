@@ -48,20 +48,6 @@ if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
                 $err_msg[] = 'ファイルを選択してください';
             }
 
-
-            $sql = 'SELECT MAX(drink_id) as max_id FROM drink_info;';
-
-            // クエリ実行
-            if ($result = mysqli_query($link, $sql)) {
-                $i = 0;
-                while ($row = mysqli_fetch_assoc($result)) {
-                    $drink_id = htmlspecialchars($row['max_id'], ENT_QUOTES, 'UTF-8');
-                }
-            } else {
-                $err_msg[] = 'SQL失敗:' . $sql;
-                print 'select失敗'.$sql;
-            }
-
             $name = $_POST['name'];
             $price = $_POST['price'];
             $stock = $_POST['stock'];
@@ -73,14 +59,7 @@ if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
 
             echo '<pre>';
             move_uploaded_file($_FILES['userfile']['tmp_name'], $uploadfile);
-            //if (move_uploaded_file($_FILES['userfile']['tmp_name'], $uploadfile)) {
-                //echo "File is valid, and was successfully uploaded.\n";
-            //}
-                //} else {
-                //echo "Possible file upload attack!\n";
-            //}
 
-            
             $file_name=md5(uniqid(rand(), true));
             $file_name .= '.jpg';
 
@@ -93,18 +72,12 @@ if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
                 }
             }
 
-            //echo 'Here is some more debugging info:';
-            //print $_FILES['userfile']['tmp_name'];
-            //print_r($_FILES);
-
             print "</pre>";
 
             $img = $_FILES['userfile']['tmp_name'];
 
             $sql = "INSERT INTO `drink_info`(`name`, `price`, `create_at`, `update_at`, `public`, `image`) 
                     VALUES (N'".$name."','".$price."','".$date."','".$date."','".$public."','".$img_data."');";
-            //$sql = "INSERT INTO `drink_info`(`drink_id`, `name`, `price`, `create_at`, `update_at`, `public`, `image`) 
-            //        VALUES ('".($drink_id + 1)."', '".$name."','".$price."','".$date."','".$date."','".$public."','".$img_data."');";
 
             print 'インサートする'.$sql;
             //print $img;
@@ -113,26 +86,16 @@ if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
             }
 
             $drink_id = mysqli_insert_id($link);
-            //$sql = "INSERT INTO `drink_history`(`bought_at`) VALUES ('".$date."');";
-            //$sql = "INSERT INTO `drink_history`(`drink_id`, `bought_at`) VALUES ('".($drink_id + 1)."', '".$date."');";
+
             $sql = "INSERT INTO `drink_history`(`drink_id`, `bought_at`) VALUES ('".$drink_id."', '".$date."');";
-            //print 'インサートする'.$sql;
-            //print $img;
+
             if (mysqli_query($link, $sql) !== TRUE) {
                 $err_msg[] = 'drink_history: insertエラー:' . $sql;
             }
 
-
-            //$sql = "INSERT INTO `drink_stock`(`drink_id`,`stock`, `create_at`, `update_at`) 
-            //        VALUES ('".($drink_id + 1)."', '".$stock."','".$date."','".$date."');";
             $sql = "INSERT INTO `drink_stock`(`drink_id`,`stock`, `create_at`, `update_at`) 
                     VALUES ('".$drink_id."', '".$stock."','".$date."','".$date."');";
-            //$sql = "INSERT INTO `drink_stock`(`stock`, `create_at`, `update_at`) 
-            //         VALUES ($stock."','".$date."','".$date."');";
-
-
-            //print 'インサートする'.$sql;
-            //print $img;
+            
             if (mysqli_query($link, $sql) !== TRUE) {
                 $err_msg[] = 'drink_stock: insertエラー:' . $sql;
             }
@@ -182,24 +145,20 @@ if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
     FROM drink_info INNER JOIN drink_stock on drink_info.drink_id = drink_stock.drink_id;';
     print $sql;
     //print 'select失敗'.$sql;
+
     // クエリ実行
     if ($result = mysqli_query($link, $sql)) {
-
-        //mysqli_set_charset($link, 'UTF-8');
 
         $i = 0;
 
         while ($row = mysqli_fetch_assoc($result)) {
+
             $drink_list[$i]['id'] = htmlspecialchars($row['drink_id'], ENT_QUOTES, 'UTF-8');
             $drink_list[$i]['name'] = htmlspecialchars($row['name'], ENT_QUOTES, 'UTF-8');
             $drink_list[$i]['price'] = htmlspecialchars($row['price'], ENT_QUOTES, 'UTF-8');
             $drink_list[$i]['public'] = htmlspecialchars($row['public'], ENT_QUOTES, 'UTF-8');
             $drink_list[$i]['image'] = htmlspecialchars($row['image'], ENT_QUOTES, 'UTF-8');
             $drink_list[$i]['stock'] = htmlspecialchars($row['stock'], ENT_QUOTES, 'UTF-8');
-            //print $drink_list[$i]['name']."文字コード".mb_detect_encoding($drink_list[$i]['name']);
-            //$test = mb_convert_encoding($drink_list[$i]['name'],"ASCII", "UTF-8");
-            $test = mb_detect_encoding($drink_list[$i]['name']);
-            print $test;
             $i++;
         }
 
@@ -209,9 +168,6 @@ if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
         print 'select失敗'.$sql;
     }
 
-    //print "\n";
-    //print $drink_id;
-    //print "test".$drink_img;
     mysqli_free_result($result);
     mysqli_close($link);
 }
@@ -267,9 +223,7 @@ for ($i = 0; $i < count($err_msg); $i++) {
                         }
                         ?>
                         <td><?php print '<img src="'.$item['image'].'">'; ?></td>
-                        <td><?php print $item['name']."文字コード".mb_detect_encoding($item['name'])."文字コード変換".mb_convert_encoding($item['name'], "UTF-8", "auto"); ?></td>
-                        <!--<td><?php print $item['name']; ?></td>-->
-                        <!--<td><?php print mb_convert_encoding($item['name'], "ASCII", "UTF-8"); ?></td>-->
+                        <td><?php print $item['name']; ?></td>
                         <td><?php print $item['price']; ?></td>
                         <td>
                         <form method="post">

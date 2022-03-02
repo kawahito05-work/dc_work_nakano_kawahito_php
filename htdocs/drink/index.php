@@ -5,7 +5,7 @@ $passwd = '1234';
 $dbname ='codecamp42254';
 //$j = 1;
 
-$link = mysqli_connect($host,$user_name,$passwd,$dbname);
+//$link = mysqli_connect($host,$user_name,$passwd,$dbname);
 
 if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
 
@@ -66,7 +66,7 @@ if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
                             <li><?php print '<img src="'.$item['image'].'">'; ?></li>
                             <li><?php print $item['name']; ?></li>
                             <li><?php print $item['price']; ?></li>
-
+                            <input type="hidden" value=<?php $stock ?>>
                             <?php
                             if ($item['stock'] >= 1){
                             ?>
@@ -86,6 +86,7 @@ if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
                     }
                 } ?>
             </table>
+        <input type="hidden" name="order_flg" value=1>
         <input type="submit" value="■□■□■購入■□■□■">
     </form>
     </body>
