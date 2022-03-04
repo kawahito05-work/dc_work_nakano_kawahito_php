@@ -13,7 +13,7 @@ if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
 
     $sql = "SELECT drink_info.drink_id, drink_info.name, drink_info.price , drink_info.image ,drink_stock.stock
             FROM drink_info INNER JOIN drink_stock on drink_info.drink_id = drink_stock.drink_id WHERE drink_info.public = '1';";
-    print $sql;
+    //print $sql;
     //print 'select失敗'.$sql;
     // クエリ実行
     if ($result = mysqli_query($link, $sql)){
@@ -39,6 +39,7 @@ if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
     mysqli_free_result($result);
     mysqli_close($link);
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -58,19 +59,26 @@ if ($link = mysqli_connect($host, $user_name, $passwd, $dbname)) {
                 foreach($drink_list as $index => $item) {
                 if ( $index%4 === 0){
                     print "<tr>";
-                    //print "ココで折り返し".$index;
                 }
                 ?>
                     <td>
                         <ul>
                             <li><?php print '<img src="'.$item['image'].'">'; ?></li>
                             <li><?php print $item['name']; ?></li>
-                            <li><?php print $item['price']; ?></li>
-                            <input type="hidden" value=<?php $stock ?>>
+                            <li><?php print $item['price']."円"; ?></li>
+                            <!--
+                            <input type="hidden" name="id" value=<?php echo $item['id']; ?>>
+                            -->
+                            <!--
+                            <input type="hidden" name="name" value=<?php echo $item['name']; ?>>
+                            <input type="hidden" name="price" value=<?php echo $item['price']; ?>>
+                            <input type="hidden" name="stock" value=<?php echo $item['stock']; ?>>
+                            <input type="hidden" name="image" value=<?php echo $item['image']; ?>>
+                            -->
                             <?php
                             if ($item['stock'] >= 1){
                             ?>
-                            <li><?php print '<input type="radio" name="drink_id" value="'.$item['id'].'">' ?></li>
+                            <li><?php print '<input type="radio" name="id" value="'.$item['id'].'">'; ?></li>
                             <?php
                             }else{
                             ?>
