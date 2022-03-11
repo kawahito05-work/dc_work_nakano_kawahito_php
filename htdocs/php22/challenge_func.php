@@ -17,7 +17,7 @@ if ($request_method === 'POST') {
     // POSTデータ取得
     $height = get_post_data('height');
     $weight = get_post_data('weight');
- 
+
     // 身長の値が小数かチェック
     if (check_float($height) !== TRUE) {
         $err_msg[] = '身長は数値を入力してください';
@@ -49,12 +49,11 @@ if ($request_method === 'POST') {
 
 function calc_bmi($height, $weight) {
 
-    $bmi = round ($weight / ($height * $height) , 1);
+    $height = $height / 100;
+    //$bmi = $weight / ($height * $height);
+    $bmi = round($weight / ($height * $height), 1);
     return $bmi;
 }
-
-
-
 
 /**
 * 値が正の整数又は小数か確認
@@ -67,7 +66,11 @@ function calc_bmi($height, $weight) {
 
 function check_float($float) {
 
-    return is_float($float);
+    if (is_int($float) === FALSE){
+        //prin        
+    }
+
+    return is_numeric($float);
 }
 
 /**
