@@ -4,35 +4,60 @@ $comment = '';
 $data = '';
 $date = date('Y-m-d H:i:s');
 $host = 'localhost';
+$err_msg = [];
+$bbs_data = [];
 
+$link = access_DB();
 
 is_right_format($name, $comment);
 
-access_DB();
+$bbs_data[] = select_DB($link);
 
 if((isset($_POST['name'])===TRUE)&&(isset($_POST['comment'])===TRUE)){
     if(($_POST['name']!=='')&&($_POST['comment']!=='')){
-        $name = $_POST['name'];
-        $comment = $_POST['comment'];
-        mysqli_set_charset($link, 'utf8');
-        $query = 'INSERT INTO bbs_table(name, comment, date) VALUES(\''.$name.'\',\''.$comment.'\',\''.$date.'\')';
-        if (mysqli_query($link, $query) === TRUE){
-            print '追加成功';
-        } else {
-            print '追加失敗';
-        }
+
+        insert_DB($link);
+
     }
 }
 
-if ($link){
-    mysqli_set_charset($link, 'utf8');
-    $query = 'SELECT name, comment, date FROM bbs_table';
-    $result = mysqli_query($link, $query);
-    while($row = mysqli_fetch_array($result)){
-        $bbs_data[] = $row;
+$result = select_DB($link);
+
+disconnect_DB($result,$link);
+
+function select_DB($link) {
+    
+    if ($link){
+        
+        mysqli_set_charset($link, 'utf8');
+
+        $query = 'SELECT name, comment, date FROM bbs';
+        $result = mysqli_query($link, $query);
+        
+        while($row = mysqli_fetch_array($result)){
+            $bbs_data[] = $row;
+        }
     }
-    mysqli_free_result($result);
-    mysqli_close($link);
+    print $bbs_data[0][0];
+    return $bbs_data;
+    return $result;
+}
+
+
+function insert_DB($link){
+
+    $name = $_POST['name'];
+    $comment = $_POST['comment'];
+    $date = date('Y-M-D H:i:s');
+    mysqli_set_charset($link, 'utf8');
+
+    $query = 'INSERT INTO bbs(name, comment, date) VALUES(\''.$name.'\',\''.$comment.'\',\''.$date.'\')';
+    
+    if (mysqli_query($link, $query) === TRUE){
+        print '追加成功';
+    } else {
+        print '追加失敗';
+    }
 }
 
 //入力チェック
@@ -60,11 +85,19 @@ function access_DB() {
     $username = 'root';
     $passwd = '1234';
     $dbname = 'codecamp42254';
-    $link = mysqli_connect($host, $username, $passwd, $dbname);
+    //$link = mysqli_connect($host, $username, $passwd, $dbname);
 
-    return $link;
+    return mysqli_connect($host, $username, $passwd, $dbname);
+    //return $link;
 }
 
+//DB切断
+function disconnect_DB($result,$link){
+
+    // mysqli_free_result($result);
+    mysqli_close($link);
+
+}
 ?>
 
 <!DOCTYPE html>
@@ -83,10 +116,24 @@ function access_DB() {
         <input type="text" name="comment">
         </input>
         </div>
+        <input type="hidden" name="insert_flg" value="1">
         <input type="submit" name="submit" value="送信">
     </form>
+
+<?php 
+foreach ($bbs_data as $read) { 
+    for ($i = 0; $i < count($read); $i++) {    
+    ?>
+    <p><?php print $read[$i][0].' '.$read[$i][1].' '.$read[$i][2]; ?></p>
+<?php 
+    }
+}
+?>
+
+<!--
 <?php foreach ($bbs_data as $read) { ?>
-    <p><?php print $read[0].' '.$read[1].' '.$read[2]; ?></p>
+    <p><?php print $read[0][0].' '.$read[0][1].' '.$read[0][2]; ?></p>
 <?php } ?>
+-->
 </body>
 </html>
