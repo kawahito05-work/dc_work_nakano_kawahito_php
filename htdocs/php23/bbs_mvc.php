@@ -1,4 +1,7 @@
 <?php
+$result = '';
+$err_msg = '';
+$bbs_data = [];
 
 //　設定ファイル読み込み
 require_once 'conf/bbs_const.php';
@@ -10,27 +13,28 @@ require_once 'model/bbs_select.php';
 require_once 'model/bbs_start_DB_connection.php';
 require_once 'model/bbs_close_DB_connection.php';
 
-
 //　DB接続
 $link = start_DB_connection();
 
-$err_msg = [];
-$bbs_data = [];
-
-is_right_format($name, $comment);
-
 if((isset($_POST['name'])===TRUE)&&(isset($_POST['comment'])===TRUE)){
-    if(($_POST['name']!=='')&&($_POST['comment']!=='')){
+    //if(($_POST['name']!=='')&&($_POST['comment']!=='')){
 
-        insert_DB($link);
+        $name = $_POST['name'];
+        $comment = $_POST['comment'];
 
-    }
+        $err_msg = is_right_format($err_msg,$name, $comment);
+
+        if ($err_msg === ''){
+
+            insert_DB($link);
+        }
+    //}
 }
 
 list($result, $bbs_data) = select_DB($link);
 
 // DB切断
-close_DB_connect($link);
+close_DB_connection($result, $link);
 
-
-include_once 'bbs_list.php';
+print $err_msg;
+include_once 'view/bbs_list.php';

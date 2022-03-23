@@ -1,5 +1,4 @@
 <?php
-
 //DB接続
 function start_DB_connection() {
 

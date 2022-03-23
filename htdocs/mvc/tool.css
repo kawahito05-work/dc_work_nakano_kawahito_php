@@ -1,0 +1,16 @@
+ul {
+    list-style-type: none;
+}
+
+table {
+    width : 100%;
+    border: #000 solid;
+}
+
+tr.private {
+   background: #666;
+}
+
+td {
+    border: #000 solid;
+}
