@@ -36,18 +36,18 @@ if ($link = start_DB_connection()) {
             $err_msg = array_merge($err_msg, $tmp_arr[0]);
 
             list($name, $price, $stock, $public, $date, $image_dir) = process_tool_variable($err_msg);
-            
 
             print "</pre>";
 
+            $tmp_arr = array();
             list($revised_msg, $tmp_arr) = insert_tool($name, $price, $stock, $public, $date, $image_dir, $link, $err_msg);
-            $err_msg = array_merge($err_msg, $tmp_arr);
+            $err_msg = array_merge($tmp_arr);
 
         //在庫orステータス変更
         } else if ($_POST['sql_type'] === 'update'){
 
             list($revised_msg, $tmp_arr) = update_tool($err_msg, $link);
-            $err_msg = array_merge($err_msg, $tmp_arr[0]);
+            $err_msg = array_merge($err_msg, $tmp_arr);
         }
     }
 
